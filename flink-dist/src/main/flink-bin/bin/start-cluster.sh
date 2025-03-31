@@ -16,7 +16,14 @@
 #  See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
+#1、判断是否是HA模式，如果是HA模式，则去读flink-conf.yaml文件来判断哪个是主节点
+#2、如果是HA模式，则遍历所有Master，一个个启动
+#    1）判断本机是否为Master，如果是则直接调用本地的jobmanager.sh脚本来启动
+#    2）如果本机不是Master，则调用jobmanager.sh脚本 来远程启动Master
+#3、若不是HA模式则直接调用本地jobmanager.sh脚本来启动
+#4、最后，调用TMWorkers函数，这个函数在config.sh里
 
+JobManster=jobmanager.sh
 bin=`dirname "$0"`
 bin=`cd "$bin"; pwd`
 

@@ -463,7 +463,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     private void startTaskExecutorServices() throws Exception {
         try {
-            // start by connecting to the ResourceManager
+            // start by connecting to the ResourceManager， listener的作用是在成为leader时，触发notifyLeaderAddress，并向ResourceManager建立连接注册
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
 
             // tell the task slot table who's responsible for the task slot actions

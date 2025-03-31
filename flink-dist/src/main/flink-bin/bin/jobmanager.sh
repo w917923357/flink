@@ -16,7 +16,9 @@
 #  See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-
+#1.ENTRYPOINT=standalonesession通过这行脚本我们可以知道变量对应的值standalonesession(很重要后面flink-daemon.sh会用到standalonesession去判断)。
+#2.最后调用/flink-daemon.sh 然后将standalonesession作为参数传入进去
+#3.接下来可以从下面flink-daemon.sh 脚本里面看到具体调用的类
 # Start/stop a Flink JobManager.
 USAGE="Usage: jobmanager.sh ((start|start-foreground) [args])|stop|stop-all"
 

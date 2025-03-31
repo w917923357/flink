@@ -480,6 +480,10 @@ readWorkers() {
 
 # starts or stops TMs on all workers
 # TMWorkers start|stop
+#1、判断本机是否为worker
+#2、如果本机是worker则直接调用本地taskmanager.sh脚本启动
+#3、如果本机不是worker，则通过调用命令远程启动taskmanager.sh脚本
+# 也就是说 TMWorkers=taskmanager.sh
 TMWorkers() {
     CMD=$1
 

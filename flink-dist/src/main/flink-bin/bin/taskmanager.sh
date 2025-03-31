@@ -16,7 +16,9 @@
 #  See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-
+#1.通过ENTRYPOINT=taskexecutor脚本可以看到脚本中变量taskexecutor(很重要后面flink-daemon.sh会用到taskexecutor去判断)。
+#2.最后调用/flink-daemon.sh 然后将taskexecutor作为参数传入进去
+#3.接下来可以从下面flink-daemon.sh 脚本里面看到具体调用的类
 # Start/stop a Flink TaskManager.
 USAGE="Usage: taskmanager.sh (start|start-foreground|stop|stop-all)"
 
