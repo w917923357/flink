@@ -201,7 +201,7 @@ public class SingleInputGateFactory {
                         maybeCreateBufferDebloater(
                                 owningTaskName, gateIndex, networkInputGroup.addGroup(gateIndex)));
 
-        createInputChannelsAndTieredStorageService(
+        createInputChannelsAndTieredStorageService(//inputChannel创建
                 owningTaskName,
                 igdd,
                 inputGate,
@@ -243,7 +243,7 @@ public class SingleInputGateFactory {
             InputChannelMetrics metrics,
             boolean isSharedInputChannelSupported) {
         ShuffleDescriptor[] shuffleDescriptors =
-                inputGateDeploymentDescriptor.getShuffleDescriptors();
+                inputGateDeploymentDescriptor.getShuffleDescriptors();//注意这个shuffleDescriptors 的来源， 是否是jobMaster？
 
         // Create the input channels. There is one input channel for each consumed subpartition.
         InputChannel[] inputChannels =
@@ -381,7 +381,7 @@ public class SingleInputGateFactory {
             ChannelStatistics channelStatistics,
             InputChannelMetrics metrics) {
         ResultPartitionID partitionId = inputChannelDescriptor.getResultPartitionID();
-        if (inputChannelDescriptor.isLocalTo(taskExecutorResourceId)) {
+        if (inputChannelDescriptor.isLocalTo(taskExecutorResourceId)) {//判断是否是本地
             // Consuming task is deployed to the same TaskManager as the partition => local
             channelStatistics.numLocalChannels++;
             return new LocalRecoveredInputChannel(

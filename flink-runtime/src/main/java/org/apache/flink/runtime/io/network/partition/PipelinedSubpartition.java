@@ -90,7 +90,7 @@ public class PipelinedSubpartition extends ResultSubpartition implements Channel
     private int buffersInBacklog;
 
     /** The read view to consume this subpartition. */
-    PipelinedSubpartitionView readView;
+    PipelinedSubpartitionView readView; //读取队列中内容对接InputChannel
 
     /** Flag indicating whether the subpartition has been finished. */
     private boolean isFinished;

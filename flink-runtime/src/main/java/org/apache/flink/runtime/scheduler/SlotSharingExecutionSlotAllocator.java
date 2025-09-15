@@ -176,7 +176,7 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
 
         if (!groupsToAssign.isEmpty()) {
             Map<ExecutionSlotSharingGroup, SharedSlot> allocatedSlots =
-                    allocateSharedSlots(groupsToAssign, sharedSlotProfileRetriever);
+                    allocateSharedSlots(groupsToAssign, sharedSlotProfileRetriever);//申请slot
             slots.putAll(allocatedSlots);
             groupsToAssign.removeAll(allocatedSlots.keySet());
             Preconditions.checkState(groupsToAssign.isEmpty());
@@ -277,7 +277,7 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
         }
 
         Map<SlotRequestId, CompletableFuture<PhysicalSlotRequest.Result>> allocateResult =
-                slotProvider.allocatePhysicalSlots(slotRequests);
+                slotProvider.allocatePhysicalSlots(slotRequests);//申请slot
 
         allocateResult.forEach(
                 (slotRequestId, resultCompletableFuture) -> {

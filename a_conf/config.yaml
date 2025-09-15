@@ -1,22 +1,11 @@
 ################################################################################
-
 env.java.opts.all: --add-exports=java.base/sun.net.util=ALL-UNNAMED --add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
-
 jobmanager.resource-id: q1
-
-
 jobmanager.rpc.address: localhost
-
 # The RPC port where the JobManager is reachable.
-
 jobmanager.rpc.port: 6123
-
 jobmanager.bind-host: localhost
-
 jobmanager.memory.process.size: 1600m
-
-
-
 taskmanager.bind-host: localhost
 taskmanager.resource-id: q2
 
@@ -27,6 +16,7 @@ taskmanager.memory.task.heap.size: 512m
 #托管内存
 taskmanager.memory.managed.size: 512m
 #网络内存（Network Memory）
+#用于任务之间数据传输的直接内存（例如网络传输缓冲）。该内存部分为基于 Flink 总内存的受限的等比内存部分。
 taskmanager.memory.network.min: 128m
 taskmanager.memory.network.max: 128m
 #任务堆外内存
@@ -41,24 +31,17 @@ taskmanager.memory.jvm-metaspace.size: 128m
 taskmanager.memory.jvm-overhead.min: 128m
 taskmanager.memory.jvm-overhead.max: 128m
 #心跳参数
-heartbeat.timeout: 50000
-heartbeat.interval: 10000
-
-
+#heartbeat.timeout: 50000
+#heartbeat.interval: 10000
 taskmanager.host: localhost
-
-
-taskmanager.memory.process.size: 1728m
-
-
-taskmanager.numberOfTaskSlots: 1
-
+taskmanager.memory.process.size: 4096m
+taskmanager.numberOfTaskSlots: 2
 # The parallelism used for programs that did not specify and other parallelism.
-
 parallelism.default: 1
-
 jobmanager.execution.failover-strategy: region
-
 rest.address: localhost
-
 rest.bind-address: localhost
+pekko.ask.timeout: 3000000
+#心跳参数
+heartbeat.timeout: 3000000
+heartbeat.interval: 3000000

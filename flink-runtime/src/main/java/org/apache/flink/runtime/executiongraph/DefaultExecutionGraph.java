@@ -900,13 +900,13 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
                 (resultId, info) ->
                         this.vertexInputInfoStore.put(ejv.getJobVertexId(), resultId, info));
 
-        ejv.initialize(
+        ejv.initialize(//设置 executionJobVertex 和 IntermediateResult
                 executionHistorySizeLimit,
                 rpcTimeout,
                 createTimestamp,
                 this.initialAttemptCounts.getAttemptCounts(ejv.getJobVertexId()));
 
-        ejv.connectToPredecessors(this.intermediateResults);
+        ejv.connectToPredecessors(this.intermediateResults);// 设置edgeManager
 
         for (IntermediateResult res : ejv.getProducedDataSets()) {
             IntermediateResult previousDataSet =

@@ -44,7 +44,7 @@ public interface ChannelSelector<T extends IOReadableWritable> {
      * @return an integer number which indicates the index of the output channel through which the
      *     record shall be forwarded.
      */
-    int selectChannel(T record);
+    int selectChannel(T record);//向下游发送数据时，要将数据推送到哪个并行度
 
     /**
      * Returns whether the channel selector always selects all the output channels.

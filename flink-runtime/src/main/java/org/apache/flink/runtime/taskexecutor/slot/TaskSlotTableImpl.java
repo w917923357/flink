@@ -280,7 +280,7 @@ public class TaskSlotTableImpl<T extends TaskSlotPayload> implements TaskSlotTab
     }
 
     @Override
-    public boolean allocateSlot(
+    public boolean allocateSlot(//分配slot
             int requestedIndex,
             JobID jobId,
             AllocationID allocationId,

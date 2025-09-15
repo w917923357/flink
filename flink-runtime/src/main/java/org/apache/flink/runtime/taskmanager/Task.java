@@ -410,7 +410,7 @@ public class Task
 
         this.partitionWriters = resultPartitionWriters;
 
-        // consumed intermediate result partitions
+        // consumed intermediate r esult partitions
         final IndexedInputGate[] gates =
                 shuffleEnvironment
                         .createInputGates(taskShuffleContext, this, inputGateDeploymentDescriptors)

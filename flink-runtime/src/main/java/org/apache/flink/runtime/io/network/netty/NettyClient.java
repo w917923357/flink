@@ -113,13 +113,13 @@ class NettyClient {
                 config.getClientConnectTimeoutSeconds() * 1000);
 
         // Pooled allocator for Netty's ByteBuf instances
-        bootstrap.option(ChannelOption.ALLOCATOR, nettyBufferPool);
+        bootstrap.option(ChannelOption.ALLOCATOR, nettyBufferPool);//NettyClient 设置Netty的ByteBuf实例的分配器为传入的nettyBufferPool
 
         // Receive and send buffer size
         int receiveAndSendBufferSize = config.getSendAndReceiveBufferSize();
         if (receiveAndSendBufferSize > 0) {
-            bootstrap.option(ChannelOption.SO_SNDBUF, receiveAndSendBufferSize);
-            bootstrap.option(ChannelOption.SO_RCVBUF, receiveAndSendBufferSize);
+            bootstrap.option(ChannelOption.SO_SNDBUF, receiveAndSendBufferSize);//设置TCP的发送缓冲区大小， 这里使用分配器分离锁，提高内存分配效率
+            bootstrap.option(ChannelOption.SO_RCVBUF, receiveAndSendBufferSize);//设置TCP的接收缓冲区大小
         }
 
         try {

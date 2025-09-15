@@ -116,7 +116,7 @@ class NettyServer {
         bootstrap.option(ChannelOption.ALLOCATOR, nettyBufferPool);
         bootstrap.childOption(ChannelOption.ALLOCATOR, nettyBufferPool);
 
-        if (config.getServerConnectBacklog() > 0) {
+        if (config.getServerConnectBacklog() > 0) {//netty反压， 如果设置了服务器连接backlog（等待队列长度），则设置到ServerBootstrap
             bootstrap.option(ChannelOption.SO_BACKLOG, config.getServerConnectBacklog());
         }
 

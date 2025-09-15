@@ -206,7 +206,7 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
                 acceptedSlotOffers.add(offer);
             } else {
                 Optional<AllocatedSlot> acceptedSlot =
-                        matchOfferWithOutstandingRequirements(
+                        matchOfferWithOutstandingRequirements(//真正实际slot生成
                                 offer, taskManagerLocation, taskManagerGateway, matchingCondition);
                 if (acceptedSlot.isPresent()) {
                     acceptedSlotOffers.add(offer);
@@ -286,7 +286,7 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
             increaseAvailableResources(ResourceCounter.withResource(matchedRequirement, 1));
 
             final AllocatedSlot allocatedSlot =
-                    createAllocatedSlot(slotOffer, taskManagerLocation, taskManagerGateway);
+                    createAllocatedSlot(slotOffer, taskManagerLocation, taskManagerGateway);//真正使用的资源
 
             // store the ResourceProfile against which the given slot has matched for future
             // book-keeping

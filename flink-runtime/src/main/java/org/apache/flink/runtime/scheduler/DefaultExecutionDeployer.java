@@ -95,7 +95,7 @@ public class DefaultExecutionDeployer implements ExecutionDeployer {
         transitionToScheduled(executionsToDeploy);
 
         final Map<ExecutionAttemptID, ExecutionSlotAssignment> executionSlotAssignmentMap =
-                allocateSlotsFor(executionsToDeploy);
+                allocateSlotsFor(executionsToDeploy);//申请资源
 
         final List<ExecutionDeploymentHandle> deploymentHandles =
                 createDeploymentHandles(

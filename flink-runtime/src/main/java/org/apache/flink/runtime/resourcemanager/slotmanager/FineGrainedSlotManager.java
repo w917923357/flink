@@ -641,7 +641,7 @@ public class FineGrainedSlotManager implements SlotManager {
                 resourceAllocationStrategy.tryFulfillRequirements(
                         missingResources, taskManagerTracker, this::isBlockedTaskManager);
 
-        // Allocate slots according to the result
+        // Allocate slots according to the result  分配资源
         allocateSlotsAccordingTo(result.getAllocationsOnRegisteredResources());
 
         final Set<PendingTaskManagerId> failAllocations;

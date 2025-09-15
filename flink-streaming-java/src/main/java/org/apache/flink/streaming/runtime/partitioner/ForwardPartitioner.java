@@ -33,7 +33,7 @@ public class ForwardPartitioner<T> extends StreamPartitioner<T> {
 
     @Override
     public int selectChannel(SerializationDelegate<StreamRecord<T>> record) {
-        return 0;
+        return 0;//发送到下游对应的第一个task，保证上下游算子并行度的一致，上下游的算子是1:1
     }
 
     public StreamPartitioner<T> copy() {

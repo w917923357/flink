@@ -673,7 +673,7 @@ public abstract class Dispatcher extends FencedRpcEndpoint<DispatcherId>
 
     private void runJob(JobManagerRunner jobManagerRunner, ExecutionType executionType)
             throws Exception {
-        jobManagerRunner.start();
+        jobManagerRunner.start();//jobMaster的创建并启动
         jobManagerRunnerRegistry.register(jobManagerRunner);
 
         final JobID jobId = jobManagerRunner.getJobID();
@@ -690,7 +690,7 @@ public abstract class Dispatcher extends FencedRpcEndpoint<DispatcherId>
                                             "The job entry in runningJobs must be bound to the lifetime of the JobManagerRunner.");
 
                                     if (jobManagerRunnerResult != null) {
-                                        return handleJobManagerRunnerResult(
+                                        return handleJobManagerRunnerResult(//wordCount 运行结束 才会归档
                                                 jobManagerRunnerResult, executionType);
                                     } else {
                                         return CompletableFuture.completedFuture(
