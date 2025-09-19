@@ -604,7 +604,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                 return;
         }
 
-        TaskIOMetricGroup ioMetrics = getEnvironment().getMetricGroup().getIOMetricGroup();
+        TaskIOMetricGroup ioMetrics = getEnvironment().getMetricGroup().getIOMetricGroup();//反压变红的判断位置
         PeriodTimer timer;
         CompletableFuture<?> resumeFuture;
         if (!recordWriter.isAvailable()) {

@@ -885,7 +885,7 @@ public class SingleInputGate extends IndexedInputGate {
 
     private Optional<Buffer> readRecoveredOrNormalBuffer(InputChannel inputChannel)
             throws IOException, InterruptedException {
-        // Firstly, read the buffers from the recovered channel
+        // Firstly, read the buffers from the recovered channel 什么情况下 从这里读取数据？？？
         if (inputChannel instanceof RecoveredInputChannel && !inputChannel.isReleased()) {
             Optional<Buffer> buffer = readBufferFromInputChannel(inputChannel);
             if (!((RecoveredInputChannel) inputChannel).getStateConsumedFuture().isDone()) {

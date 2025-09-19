@@ -174,7 +174,7 @@ public class BufferManager implements BufferListener, BufferRecycler {
             numRequiredBuffers = numRequired;
             numRequestedBuffers = tryRequestBuffers();
         }
-        return numRequestedBuffers;
+        return numRequestedBuffers;//下游实际申请到的缓冲区数量，作为信用值会传递给上游
     }
 
     private int tryRequestBuffers() {

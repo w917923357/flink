@@ -556,7 +556,7 @@ public class RemoteInputChannel extends InputChannel {
      * @param backlog The number of unsent buffers in the producer's sub partition.
      */
     public void onSenderBacklog(int backlog) throws IOException {
-        notifyBufferAvailable(bufferManager.requestFloatingBuffers(backlog + initialCredit));
+        notifyBufferAvailable(bufferManager.requestFloatingBuffers(backlog + initialCredit)); //initialCredit 默认是2，有高级参数控制，检查是否如此
     }
 
     /**
@@ -604,7 +604,7 @@ public class RemoteInputChannel extends InputChannel {
                     firstPriorityEvent = addPriorityBuffer(sequenceBuffer);
                     recycleBuffer = false;
                 } else {
-                    receivedBuffers.add(sequenceBuffer);
+                    receivedBuffers.add(sequenceBuffer);//netty client将数据保存到这个队列后，后续inputGate会消费这里的数据, 消费的代码是(Optional<BufferOrEvent> bufferOrEvent = checkpointedInputGate.pollNext();)
                     recycleBuffer = false;
                     if (dataType.requiresAnnouncement()) {
                         firstPriorityEvent = addPriorityBuffer(announce(sequenceBuffer));
@@ -632,7 +632,7 @@ public class RemoteInputChannel extends InputChannel {
             }
 
             if (backlog >= 0) {
-                onSenderBacklog(backlog);
+                onSenderBacklog(backlog); // 处理发送方的backlog（可能是调整发送速率、通知其他组件或进行其他相关操作）
             }
         } finally {
             if (recycleBuffer) {

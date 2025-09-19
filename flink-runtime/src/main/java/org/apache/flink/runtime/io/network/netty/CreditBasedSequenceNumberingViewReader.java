@@ -253,10 +253,10 @@ class CreditBasedSequenceNumberingViewReader
     @Nullable
     @Override
     public BufferAndAvailability getNextBuffer() throws IOException {
-        BufferAndBacklog next = subpartitionView.getNextBuffer();
+        BufferAndBacklog next = subpartitionView.getNextBuffer(); //获取下一个缓冲区及其积压缓冲区数量
         if (next != null) {
-            if (next.buffer().isBuffer() && --numCreditsAvailable < 0) {
-                throw new IllegalStateException("no credit available");
+            if (next.buffer().isBuffer() && --numCreditsAvailable < 0) { // 如果下一个缓冲区是一个真正的缓冲区（而不是元数据或其他），并且当前可用的信用额度减一后小于0
+                throw new IllegalStateException("no credit available");   // 抛出异常，因为没有足够的信用额度来接收更多的缓冲区
             }
 
             final Buffer.DataType nextDataType = getNextDataType(next);

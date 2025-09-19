@@ -90,7 +90,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         // TODO This could potentially have a bad performance impact as in the
         // worst case (network consumes faster than the producer) each buffer
         // will trigger a separate event loop task being scheduled.
-        ctx.executor().execute(() -> ctx.pipeline().fireUserEventTriggered(reader));
+        ctx.executor().execute(() -> ctx.pipeline().fireUserEventTriggered(reader));//将当前事件转给下一个handler的 userEventTriggered
     }
 
     /**
@@ -110,7 +110,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         if (!availabilityWithBacklog.isAvailable()) {
             int backlog = availabilityWithBacklog.getBacklog();
             if (backlog > 0 && reader.needAnnounceBacklog()) {
-                announceBacklog(reader, backlog);
+                announceBacklog(reader, backlog);//通知下游 数据积压数量
             }
             return;
         }
@@ -315,7 +315,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
                 }
 
                 nextSubpartitionId = reader.peekNextBufferSubpartitionId();
-                next = reader.getNextBuffer();
+                next = reader.getNextBuffer();// 获取列队中的BufferConsumer
                 if (next == null) {
                     if (!reader.isReleased()) {
                         continue;

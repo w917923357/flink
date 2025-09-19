@@ -207,7 +207,7 @@ class CreditBasedPartitionRequestClientHandler extends ChannelInboundHandlerAdap
 
             clientOutboundMessages.add((ClientOutboundMessage) msg);
 
-            if (triggerWrite) {
+            if (triggerWrite) { //这里如果不判断，多个写操作可能并发执行，Netty 的写操作可能重叠，消息顺序可能被打乱。 当前设计解决的是写操作的串行化和批量优化
                 writeAndFlushNextMessageIfPossible(ctx.channel());
             }
         } else if (msg instanceof ConnectionErrorMessage) {

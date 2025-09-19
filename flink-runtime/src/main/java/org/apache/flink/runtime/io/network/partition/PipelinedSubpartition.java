@@ -181,11 +181,11 @@ public class PipelinedSubpartition extends ResultSubpartition implements Channel
             }
 
             // Add the bufferConsumer and update the stats
-            if (addBuffer(bufferConsumer, partialRecordLength)) {
+            if (addBuffer(bufferConsumer, partialRecordLength)) { //BufferConsumer 入队,等待后续netty Server收到客户端请求，
                 prioritySequenceNumber = sequenceNumber;
             }
             updateStatistics(bufferConsumer);
-            increaseBuffersInBacklog(bufferConsumer);
+            increaseBuffersInBacklog(bufferConsumer);// 上游resultPartition 增加backlog和bufferConsumer
             notifyDataAvailable = finish || shouldNotifyDataAvailable();
 
             isFinished |= finish;
@@ -477,7 +477,7 @@ public class PipelinedSubpartition extends ResultSubpartition implements Channel
                 buffer = buildSliceBuffer(bufferConsumerWithPartialRecordLength);
 
                 checkState(
-                        bufferConsumer.isFinished() || buffers.size() == 1,
+                        bufferConsumer.isFinished() || buffers.size() == 1, //如果有多个缓冲区，队列头部不能是未完成的。(未完成的 BufferConsumer 可能还在被写入，不应该被消费, 只有完成的 BufferConsumer 才能安全地被读取和传输), 方式读取到不完整或正在写入的数据。
                         "When there are multiple buffers, an unfinished bufferConsumer can not be at the head of the buffers queue.");
 
                 if (buffers.size() == 1) {
@@ -485,7 +485,7 @@ public class PipelinedSubpartition extends ResultSubpartition implements Channel
                     flushRequested = false;
                 }
 
-                if (bufferConsumer.isFinished()) {
+                if (bufferConsumer.isFinished()) { //如果BufferConsumer已完成，则关闭并移除它，同时更新backlog中的缓冲区数量
                     requireNonNull(buffers.poll()).getBufferConsumer().close();
                     decreaseBuffersInBacklogUnsafe(bufferConsumer.isBuffer());
                 }
@@ -593,7 +593,7 @@ public class PipelinedSubpartition extends ResultSubpartition implements Channel
         synchronized (buffers) {
             boolean isAvailable;
             if (isCreditAvailable) {
-                isAvailable = isDataAvailableUnsafe();
+                isAvailable = isDataAvailableUnsafe(); //这里判断的是 是否有数据可用，并不是下游是否有能力处理
             } else {
                 isAvailable = getNextBufferTypeUnsafe().isEvent();
             }
