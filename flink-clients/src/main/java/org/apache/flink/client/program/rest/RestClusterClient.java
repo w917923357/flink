@@ -355,7 +355,7 @@ public class RestClusterClient<T> implements ClusterClient<T> {
     }
 
     @Override
-    public CompletableFuture<JobID> submitJob(@Nonnull JobGraph jobGraph) {
+    public CompletableFuture<JobID> submitJob(@Nonnull JobGraph jobGraph) {//cliFrontend 提交作业到jm
         CompletableFuture<java.nio.file.Path> jobGraphFileFuture =
                 CompletableFuture.supplyAsync(
                         () -> {

@@ -178,7 +178,7 @@ public class DefaultExecutionDeployer implements ExecutionDeployer {
     }
 
     private BiFunction<Void, Throwable, Void> deployAll(
-            final List<ExecutionDeploymentHandle> deploymentHandles) {
+            final List<ExecutionDeploymentHandle> deploymentHandles) {//deploymentHandles封装了所有的待部署的task(按照算子并行度)
         return (ignored, throwable) -> {
             propagateIfNonNull(throwable);
             for (final ExecutionDeploymentHandle deploymentHandle : deploymentHandles) {
@@ -310,7 +310,7 @@ public class DefaultExecutionDeployer implements ExecutionDeployer {
             }
 
             if (throwable == null) {
-                deployTaskSafe(execution);
+                deployTaskSafe(execution);// 每个task 部署的位置
             } else {
                 handleTaskDeploymentFailure(execution, throwable);
             }

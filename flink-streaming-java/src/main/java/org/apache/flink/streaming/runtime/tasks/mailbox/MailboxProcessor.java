@@ -226,8 +226,8 @@ public class MailboxProcessor implements Closeable {
 
         while (isNextLoopPossible()) {
             // The blocking `processMail` call will not return until default action is available.
-            processMail(localMailbox, false);
-            if (isNextLoopPossible()) {
+            processMail(localMailbox, false); // 1. 处理邮箱中的邮件（checkpoint、cancel等异步任务）
+            if (isNextLoopPossible()) { // 2. 执行默认动作（处理数据）
                 mailboxDefaultAction.runDefaultAction(
                         mailboxController); // lock is acquired inside default action as needed
             }

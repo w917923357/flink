@@ -594,7 +594,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                 endData(StopMode.DRAIN);
                 notifyEndOfData();
                 return;
-            case END_OF_INPUT:
+            case END_OF_INPUT://主动暂停机制。触发情况：当输入流结束时，为了避免重复执行空的默认操作（即处理记录）
                 // Suspend the mailbox processor, it would be resumed in afterInvoke and finished
                 // after all records processed by the downstream tasks. We also suspend the default
                 // actions to avoid repeat executing the empty default operation (namely process
@@ -607,14 +607,14 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         TaskIOMetricGroup ioMetrics = getEnvironment().getMetricGroup().getIOMetricGroup();//反压变红的判断位置
         PeriodTimer timer;
         CompletableFuture<?> resumeFuture;
-        if (!recordWriter.isAvailable()) {
+        if (!recordWriter.isAvailable()) { //输出缓冲区满（反压）
             timer = new GaugePeriodTimer(ioMetrics.getSoftBackPressuredTimePerSecond());
             resumeFuture = recordWriter.getAvailableFuture();
-        } else if (!inputProcessor.isAvailable()) {
+        } else if (!inputProcessor.isAvailable()) {//输入数据不可用（空闲）
             timer = new GaugePeriodTimer(ioMetrics.getIdleTimeMsPerSecond());
             resumeFuture = inputProcessor.getAvailableFuture();
         } else if (changelogWriterAvailabilityProvider != null
-                && !changelogWriterAvailabilityProvider.isAvailable()) {
+                && !changelogWriterAvailabilityProvider.isAvailable()) {//状态后端写入阻塞
             // waiting for changelog availability is reported as busy
             timer = new GaugePeriodTimer(ioMetrics.getChangelogBusyTimeMsPerSecond());
             resumeFuture = changelogWriterAvailabilityProvider.getAvailableFuture();
@@ -623,7 +623,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             return;
         }
         assertNoException(
-                resumeFuture.thenRun(
+                resumeFuture.thenRun(//检测到阻塞，系统立即调用suspendDefaultAction
                         new ResumeWrapper(controller.suspendDefaultAction(timer), timer)));
     }
 
@@ -750,10 +750,10 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             // we need to make sure that any triggers scheduled in open() cannot be
             // executed before all operators are opened
             CompletableFuture<Void> allGatesRecoveredFuture =
-                    actionExecutor.call(() -> restoreStateAndGates(initializationMetrics));
+                    actionExecutor.call(() -> restoreStateAndGates(initializationMetrics));// 1. 恢复状态和gates
 
             // Run mailbox until all gates will be recovered.
-            mailboxProcessor.runMailboxLoop();
+            mailboxProcessor.runMailboxLoop(); // 2. 运行mailbox处理恢复任务
 
             initializationMetrics.addDurationMetric(
                     GATE_RESTORE_DURATION,
@@ -762,7 +762,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             ensureNotCanceled();
 
             checkState(
-                    allGatesRecoveredFuture.isDone(),
+                    allGatesRecoveredFuture.isDone(), // 3. 确保恢复完成
                     "Mailbox loop interrupted before recovery was finished.");
 
             // we recovered all the gates, we can close the channel IO executor as it is no longer
@@ -932,11 +932,11 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         }
 
         FutureUtils.waitForAll(terminationConditions)
-                .thenRun(mailboxProcessor::allActionsCompleted);
+                .thenRun(mailboxProcessor::allActionsCompleted); // 1. 设置终止条件
 
         // Resumes the mailbox processor. The mailbox processor would be completed
         // after all records are processed by the downstream tasks.
-        mailboxProcessor.runMailboxLoop();
+        mailboxProcessor.runMailboxLoop(); // 2. 开始主执行循环
 
         // make sure no further checkpoint and notification actions happen.
         // at the same time, this makes sure that during any "regular" exit where still
@@ -951,7 +951,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                 });
 
         // processes the remaining mails; no new mails can be enqueued
-        mailboxProcessor.drain();
+        mailboxProcessor.drain(); // 3. 清理和关闭, 处理剩余邮件
 
         // Set isRunning to false after all the mails are drained so that
         // the queued checkpoint requirements could be triggered normally.

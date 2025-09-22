@@ -183,7 +183,7 @@ public class SourceStreamTask<
 
     @Override
     protected void processInput(MailboxDefaultAction.Controller controller) throws Exception {
-
+        //触发情况: Source任务启动时立即暂停默认动作，因为Source函数以循环方式运行，而不是分步执行
         controller.suspendDefaultAction();
 
         // Against the usual contract of this method, this implementation is not step-wise but

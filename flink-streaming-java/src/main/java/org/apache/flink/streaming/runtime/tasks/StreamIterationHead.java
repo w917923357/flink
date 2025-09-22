@@ -81,7 +81,7 @@ public class StreamIterationHead<OUT> extends OneInputStreamTask<OUT, OUT> {
                 output.collect(nextRecord);
             }
         } else {
-            controller.suspendDefaultAction();
+            controller.suspendDefaultAction();//触发情况：在迭代计算中，当没有下一条记录可处理时（nextRecord == null），暂停处理等待新数据
             mailboxProcessor.suspend();
         }
     }
