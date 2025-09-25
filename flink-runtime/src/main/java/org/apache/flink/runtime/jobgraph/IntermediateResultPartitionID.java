@@ -33,9 +33,9 @@ public class IntermediateResultPartitionID implements ResultID {
     // It is the sum of two long types(lowerPart and upperPart of the intermediateDataSetID) and one
     // int type(partitionNum).
     private static final int BYTEBUF_LEN = 20;
-
+    //类型为 IntermediateDataSetID，标识这个分区所属的中间数据集
     private final IntermediateDataSetID intermediateDataSetID;
-    private final int partitionNum;
+    private final int partitionNum;//表示这是该数据集的第几个分区
 
     /** Creates an new random intermediate result partition ID for testing. */
     @VisibleForTesting

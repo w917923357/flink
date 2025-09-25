@@ -358,7 +358,7 @@ public class MailboxProcessor implements Closeable {
         boolean processedSomething = false;
         Optional<Mail> maybeMail;
         while (!isDefaultActionAvailable() && isNextLoopPossible()) { //isDefaultActionAvailable() 返回 false 时，说明主要处理逻辑被阻塞
-            maybeMail = mailbox.tryTake(MIN_PRIORITY);
+            maybeMail = mailbox.tryTake(MIN_PRIORITY); //返回空（没有立即可用的邮件）
             if (!maybeMail.isPresent()) {
                 maybeMail = Optional.of(mailbox.take(MIN_PRIORITY));
             }

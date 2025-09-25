@@ -41,9 +41,9 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 public final class ResultPartitionID implements Serializable {
 
     private static final long serialVersionUID = -902516386203787826L;
-
-    private final IntermediateResultPartitionID partitionId;
-
+    //这个变量唯一标识一个中间结果分区（Intermediate Result Partition）。在Flink中，当一个任务产生数据时，这些数据被组织成一个或多个分区，每个分区都有一个唯一的ID
+    private final IntermediateResultPartitionID partitionId;//两个FlatMap 每个算子都会注册Partition，就会创建两个ResultPartitionID， 也就会有两个IntermediateResultPartitionID
+    //这个变量唯一标识产生这个结果分区的任务执行尝试。在分布式系统中，任务可能会失败并重新执行，每次执行尝试都有一个唯一的ID
     private final ExecutionAttemptID producerId;
 
     @VisibleForTesting

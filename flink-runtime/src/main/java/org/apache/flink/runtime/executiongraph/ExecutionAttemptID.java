@@ -41,11 +41,11 @@ public class ExecutionAttemptID implements java.io.Serializable {
     // type(executionVertexId) and one int type(attemptNumber).
     private static final int BYTE_BUF_LEN = ExecutionGraphID.SIZE + ExecutionVertexID.SIZE + 4;
 
-    private final ExecutionGraphID executionGraphId;
+    private final ExecutionGraphID executionGraphId;//标识所属的执行图
 
-    private final ExecutionVertexID executionVertexId;
+    private final ExecutionVertexID executionVertexId;//标识具体的执行顶点
 
-    private final int attemptNumber;
+    private final int attemptNumber;//表示这是该任务的第几次执行尝试
 
     public ExecutionAttemptID(
             ExecutionGraphID executionGraphId,

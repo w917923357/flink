@@ -608,7 +608,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         PeriodTimer timer;
         CompletableFuture<?> resumeFuture;
         if (!recordWriter.isAvailable()) { //输出缓冲区满（反压）
-            timer = new GaugePeriodTimer(ioMetrics.getSoftBackPressuredTimePerSecond());
+            timer = new GaugePeriodTimer(ioMetrics.getSoftBackPressuredTimePerSecond()); // 创建软背压计时器
             resumeFuture = recordWriter.getAvailableFuture();
         } else if (!inputProcessor.isAvailable()) {//输入数据不可用（空闲）
             timer = new GaugePeriodTimer(ioMetrics.getIdleTimeMsPerSecond());

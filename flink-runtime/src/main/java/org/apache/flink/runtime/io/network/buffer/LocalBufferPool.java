@@ -544,18 +544,18 @@ public class LocalBufferPool implements BufferPool {
         if (!availableMemorySegments.isEmpty()) {
             return AvailabilityStatus.from(shouldBeAvailable(), false);
         }
-        if (isRequestedSizeReached()) {
+        if (isRequestedSizeReached()) { // 达到最大请求数量
             return AvailabilityStatus.UNAVAILABLE_NEED_NOT_REQUESTING_NOTIFICATION;
         }
         boolean needRequestingNotificationOfGlobalPoolAvailable = false;
         // There aren't availableMemorySegments, and we continue to request new memory segment from
         // global pool.
-        if (!requestMemorySegmentFromGlobal()) {
+        if (!requestMemorySegmentFromGlobal()) { // 尝试从全局池请求新的内存段
             // If we can not get a buffer from global pool, we should request from it when it
             // becomes available. It should be noted that if we are already in this status, do not
             // need to repeat the request.
             needRequestingNotificationOfGlobalPoolAvailable =
-                    !requestingNotificationOfGlobalPoolAvailable;
+                    !requestingNotificationOfGlobalPoolAvailable; // 全局池也没有可用Buffer，需要等待通知
         }
         return AvailabilityStatus.from(
                 shouldBeAvailable(), needRequestingNotificationOfGlobalPoolAvailable);

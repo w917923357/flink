@@ -187,7 +187,7 @@ public class Execution
     private IOMetrics ioMetrics;
 
     private Map<IntermediateResultPartitionID, ResultPartitionDeploymentDescriptor>
-            producedPartitions;
+            producedPartitions;// deploy方法中，taskManagerGateway.submitTask(deployment, rpcTimeout), executor) 一行 向taskManager提交任务，会将这个描述信息发送给taskManager
 
     // --------------------------------------------------------------------------------------------
 
@@ -427,7 +427,7 @@ public class Execution
 
         assertRunningInJobMasterMainThread();
 
-        return FutureUtils.thenApplyAsyncIfNotDone(
+        return FutureUtils.thenApplyAsyncIfNotDone(//第一个参数的方法完成后，会执行第三个参数的方法并将参数1的返回值作为入参
                 registerProducedPartitions(vertex, location, attemptId),
                 vertex.getExecutionGraphAccessor().getJobMasterMainThreadExecutor(),
                 producedPartitionsCache -> {
@@ -591,7 +591,7 @@ public class Execution
             // does not block
             // the main thread and sync back to the main thread once submission is completed.
             CompletableFuture.supplyAsync(
-                            () -> taskManagerGateway.submitTask(deployment, rpcTimeout), executor)//向taskmanager提交任务
+                            () -> taskManagerGateway.submitTask(deployment, rpcTimeout), executor)//向taskmanager提交任务，
                     .thenCompose(Function.identity())
                     .whenCompleteAsync(
                             (ack, failure) -> {

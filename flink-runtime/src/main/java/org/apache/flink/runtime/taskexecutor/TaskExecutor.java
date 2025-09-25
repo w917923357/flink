@@ -638,7 +638,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     @Override
     public CompletableFuture<Acknowledge> submitTask(
-            TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {//tdd的来源是哪里，jobMaster？
+            TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {//调用来源 Execution.java  taskManagerGateway.submitTask(deployment, rpcTimeout), executor)
 
         try {
             final JobID jobId = tdd.getJobId();
