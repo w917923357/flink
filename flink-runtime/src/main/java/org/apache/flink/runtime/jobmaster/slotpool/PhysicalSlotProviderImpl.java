@@ -93,7 +93,7 @@ public class PhysicalSlotProviderImpl implements PhysicalSlotProvider {
                                                     .map(CompletableFuture::completedFuture)
                                                     .orElseGet(
                                                             () ->
-                                                                    requestNewSlot(//申请slot
+                                                                    requestNewSlot( // 申请slot
                                                                             slotRequestId,
                                                                             resourceProfile,
                                                                             slotProfile
@@ -137,11 +137,11 @@ public class PhysicalSlotProviderImpl implements PhysicalSlotProvider {
             ResourceProfile resourceProfile,
             Collection<AllocationID> preferredAllocations,
             boolean willSlotBeOccupiedIndefinitely) {
-        if (willSlotBeOccupiedIndefinitely) {//实时
+        if (willSlotBeOccupiedIndefinitely) { // 实时
             return slotPool.requestNewAllocatedSlot(
                     slotRequestId, resourceProfile, preferredAllocations, null);
         } else {
-            return slotPool.requestNewAllocatedBatchSlot(//批处理
+            return slotPool.requestNewAllocatedBatchSlot( // 批处理
                     slotRequestId, resourceProfile, preferredAllocations);
         }
     }

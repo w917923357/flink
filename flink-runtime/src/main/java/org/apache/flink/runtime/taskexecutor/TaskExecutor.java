@@ -463,7 +463,8 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     private void startTaskExecutorServices() throws Exception {
         try {
-            // start by connecting to the ResourceManager， listener的作用是在成为leader时，触发notifyLeaderAddress，并向ResourceManager建立连接注册
+            // start by connecting to the ResourceManager，
+            // listener的作用是在成为leader时，触发notifyLeaderAddress，并向ResourceManager建立连接注册
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
 
             // tell the task slot table who's responsible for the task slot actions
@@ -638,7 +639,9 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     @Override
     public CompletableFuture<Acknowledge> submitTask(
-            TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {//tdd的来源是哪里，jobMaster？
+            TaskDeploymentDescriptor tdd,
+            JobMasterId jobMasterId,
+            Time timeout) { // tdd的来源是哪里，jobMaster？
 
         try {
             final JobID jobId = tdd.getJobId();

@@ -48,7 +48,7 @@ import static org.apache.flink.util.Preconditions.checkState;
  */
 @NotThreadSafe
 public class BufferConsumerWithPartialRecordLength {
-    private final BufferConsumer bufferConsumer;//实际的数据存储
+    private final BufferConsumer bufferConsumer; // 实际的数据存储
     private final int partialRecordLength;
 
     public BufferConsumerWithPartialRecordLength(

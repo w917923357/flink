@@ -237,21 +237,22 @@ public class StreamingJobGraphGenerator {
     private JobGraph createJobGraph() {
         preValidate();
         jobGraph.setJobType(streamGraph.getJobType());
-        jobGraph.setDynamic(streamGraph.isDynamic());//自适应，动态调整并行度
+        jobGraph.setDynamic(streamGraph.isDynamic()); // 自适应，动态调整并行度
 
         jobGraph.enableApproximateLocalRecovery(
-                streamGraph.getCheckpointConfig().isApproximateLocalRecoveryEnabled());//是否能基于本地恢复
+                streamGraph.getCheckpointConfig().isApproximateLocalRecoveryEnabled()); // 是否能基于本地恢复
 
         // Generate deterministic hashes for the nodes in order to identify them across
         // submission iff they didn't change.
         Map<Integer, byte[]> hashes =
-                defaultStreamGraphHasher.traverseStreamGraphAndGenerateHashes(streamGraph);//基于每个节点生成一个uuid
+                defaultStreamGraphHasher.traverseStreamGraphAndGenerateHashes(
+                        streamGraph); // 基于每个节点生成一个uuid
 
         // Generate legacy version hashes for backwards compatibility
         List<Map<Integer, byte[]>> legacyHashes = new ArrayList<>(legacyStreamGraphHashers.size());
         for (StreamGraphHasher hasher : legacyStreamGraphHashers) {
             legacyHashes.add(hasher.traverseStreamGraphAndGenerateHashes(streamGraph));
-        }//基于每个节点生成一个uuid, 旧版本使用的是legacyHashes, 新版本使用的是上面的hashes
+        } // 基于每个节点生成一个uuid, 旧版本使用的是legacyHashes, 新版本使用的是上面的hashes
 
         setChaining(hashes, legacyHashes);
 
@@ -290,7 +291,8 @@ public class StreamingJobGraphGenerator {
                 JobGraphUtils.prepareUserArtifactEntries(
                         streamGraph.getUserArtifacts().stream()
                                 .collect(Collectors.toMap(e -> e.f0, e -> e.f1)),
-                        jobGraph.getJobID());//缓存，可以通过   env.registerCachedFile("./a_conf/a.txt", "cache"); 设置
+                        jobGraph.getJobID()); // 缓存，可以通过   env.registerCachedFile("./a_conf/a.txt",
+        // "cache"); 设置
 
         for (Map.Entry<String, DistributedCache.DistributedCacheEntry> entry :
                 distributedCacheEntries.entrySet()) {

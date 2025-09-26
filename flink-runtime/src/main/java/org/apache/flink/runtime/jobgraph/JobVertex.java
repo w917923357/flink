@@ -522,7 +522,8 @@ public class JobVertex implements java.io.Serializable {
             boolean isBroadcast) {
 
         IntermediateDataSet dataSet =
-                input.getOrCreateResultDataSet(intermediateDataSetId, partitionType);//IntermediateDataSet创建点
+                input.getOrCreateResultDataSet(
+                        intermediateDataSetId, partitionType); // IntermediateDataSet创建点
 
         JobEdge edge = new JobEdge(dataSet, this, distPattern, isBroadcast);
         this.inputs.add(edge);

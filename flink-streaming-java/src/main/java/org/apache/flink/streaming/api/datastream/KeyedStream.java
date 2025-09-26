@@ -814,7 +814,7 @@ public class KeyedStream<T, KEY> extends DataStream<T> {
      *     (which is considered as having one field).
      * @return The transformed DataStream.
      */
-    public SingleOutputStreamOperator<T> sum(int positionToSum) {// positionToSum 指定聚合数据的位置
+    public SingleOutputStreamOperator<T> sum(int positionToSum) { // positionToSum 指定聚合数据的位置
         return aggregate(new SumAggregator<>(positionToSum, getType(), getExecutionConfig()));
     }
 

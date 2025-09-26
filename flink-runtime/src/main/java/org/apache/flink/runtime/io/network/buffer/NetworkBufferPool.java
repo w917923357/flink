@@ -125,7 +125,8 @@ public class NetworkBufferPool
         try {
             for (int i = 0; i < numberOfSegmentsToAllocate; i++) {
                 availableMemorySegments.add(
-                        MemorySegmentFactory.allocateUnpooledOffHeapMemory(segmentSize, null));//分配堆外内存
+                        MemorySegmentFactory.allocateUnpooledOffHeapMemory(
+                                segmentSize, null)); // 分配堆外内存
             }
         } catch (OutOfMemoryError err) {
             int allocated = availableMemorySegments.size();

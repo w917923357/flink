@@ -137,7 +137,8 @@ public class DefaultSlotStatusSyncer implements SlotStatusSyncer {
         FutureUtils.assertNoException(
                 requestFuture.handleAsync(
                         (Acknowledge acknowledge, Throwable throwable) -> {
-                            if (!pendingSlotAllocations.remove(allocationId)) {//如果remove失败，代表分配动作已经完成或者已经取消
+                            if (!pendingSlotAllocations.remove(
+                                    allocationId)) { // 如果remove失败，代表分配动作已经完成或者已经取消
                                 LOG.debug(
                                         "Ignoring slot allocation update from task manager {} for allocation {} and job {}, because the allocation was already completed or cancelled.",
                                         instanceId,

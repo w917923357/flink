@@ -591,7 +591,8 @@ public class Execution
             // does not block
             // the main thread and sync back to the main thread once submission is completed.
             CompletableFuture.supplyAsync(
-                            () -> taskManagerGateway.submitTask(deployment, rpcTimeout), executor)//向taskmanager提交任务
+                            () -> taskManagerGateway.submitTask(deployment, rpcTimeout),
+                            executor) // 向taskmanager提交任务
                     .thenCompose(Function.identity())
                     .whenCompleteAsync(
                             (ack, failure) -> {

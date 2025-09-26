@@ -137,7 +137,7 @@ public class JobManagerSharedServices {
     //  Creating the components from a configuration
     // ------------------------------------------------------------------------
 
-    public static JobManagerSharedServices  fromConfiguration(
+    public static JobManagerSharedServices fromConfiguration(
             Configuration config, BlobServer blobServer, FatalErrorHandler fatalErrorHandler)
             throws Exception {
 
