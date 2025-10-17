@@ -769,7 +769,7 @@ public class Task
 
             // try to mark the task as finished
             // if that fails, the task was canceled/failed in the meantime
-            if (!transitionState(ExecutionState.RUNNING, ExecutionState.FINISHED)) {
+            if (!transitionState(ExecutionState.RUNNING, ExecutionState.FINISHED)) {//task启动成功
                 throw new CancelTaskException();
             }
         } catch (Throwable t) {
@@ -854,7 +854,7 @@ public class Task
                 LOG.debug("Ensuring all FileSystem streams are closed for task {}", this);
                 FileSystemSafetyNet.closeSafetyNetAndGuardedResourcesForThread();
 
-                notifyFinalState();
+                notifyFinalState();//通知JobMaster更新task状态。
             } catch (Throwable t) {
                 // an error in the resource cleanup is fatal
                 String message =
@@ -1341,7 +1341,7 @@ public class Task
                         .handle(
                                 (triggerResult, exception) -> {
                                     if (exception != null || !triggerResult) {
-                                        declineCheckpoint(
+                                        declineCheckpoint(//向jobMaster发送ck失败消息
                                                 checkpointID,
                                                 CheckpointFailureReason.TASK_FAILURE,
                                                 exception);

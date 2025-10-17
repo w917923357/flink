@@ -331,7 +331,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
             int minDesirableBufferSize)
             throws IOException {
         int desirableBufferSize =
-                subpartitions[targetSubpartition].add(
+                subpartitions[targetSubpartition].add(// 关键 add， 向buffers添加数据， 等待PipelinedSubpartitionView.getNextBuffer() 消费buffer
                         buffer.createBufferConsumerFromBeginning(), partialRecordLength);
 
         resizeBuffer(buffer, desirableBufferSize, minDesirableBufferSize);

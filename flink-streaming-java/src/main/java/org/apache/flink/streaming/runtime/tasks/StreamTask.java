@@ -826,7 +826,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                     .thenRun(
                             () ->
                                     mainMailboxExecutor.execute(
-                                            inputGate::requestPartitions,
+                                            inputGate::requestPartitions, //初始化netty客户端 并 做第一次的partitionRequest
                                             "Input gate request partitions"));
         }
 
@@ -1194,7 +1194,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                     try {
                         boolean noUnfinishedInputGates =
                                 Arrays.stream(getEnvironment().getAllInputGates())
-                                        .allMatch(InputGate::isFinished);
+                                        .allMatch(InputGate::isFinished);//判断inputGate是否初始化完成，以及是否有未处理完成的输入数据
 
                         if (noUnfinishedInputGates) {
                             result.complete(

@@ -737,7 +737,7 @@ public class CheckpointCoordinator {
 
             FutureUtils.forward(
                     CompletableFuture.allOf(masterStatesComplete, coordinatorCheckpointsComplete),
-                    masterTriggerCompletionPromise);
+                    masterTriggerCompletionPromise);//masterTriggerCompletionPromise在失败的时候用到
 
             FutureUtils.assertNoException(
                     masterTriggerCompletionPromise
@@ -760,7 +760,7 @@ public class CheckpointCoordinator {
                                             }
                                         } else {
                                             triggerCheckpointRequest(
-                                                    request, timestamp, checkpoint);
+                                                    request, timestamp, checkpoint);//触发checkpoint
                                         }
                                         return null;
                                     },
@@ -852,11 +852,11 @@ public class CheckpointCoordinator {
         // send messages to the tasks to trigger their checkpoints
         List<CompletableFuture<Acknowledge>> acks = new ArrayList<>();
         for (Execution execution : checkpoint.getCheckpointPlan().getTasksToTrigger()) {
-            if (request.props.isSynchronous()) {
+            if (request.props.isSynchronous()) {//触发savepoint
                 acks.add(
                         execution.triggerSynchronousSavepoint(
                                 checkpointId, timestamp, checkpointOptions));
-            } else {
+            } else {//触发checkpoint
                 acks.add(execution.triggerCheckpoint(checkpointId, timestamp, checkpointOptions));
             }
         }

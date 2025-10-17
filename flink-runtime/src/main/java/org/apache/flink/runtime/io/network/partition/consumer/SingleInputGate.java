@@ -622,7 +622,7 @@ public class SingleInputGate extends IndexedInputGate {
                 // There was a race with a task failure/cancel
                 return;
             }
-
+            //IntermediateResultPartitionID是逻辑分区ID，在作业图构建时就确定了
             IntermediateResultPartitionID partitionId =
                     shuffleDescriptor.getResultPartitionID().getPartitionId();
 
@@ -639,7 +639,7 @@ public class SingleInputGate extends IndexedInputGate {
                     } else {
                         RemoteInputChannel remoteInputChannel =
                                 unknownChannel.toRemoteInputChannel(
-                                        shuffleDescriptor.getConnectionId());
+                                        shuffleDescriptor.getConnectionId());//ResultPartitionID：这是物理分区ID，包含ExecutionAttemptID，每次task重启都会变化
                         remoteInputChannel.setup();
                         newChannel = remoteInputChannel;
                     }
@@ -901,7 +901,7 @@ public class SingleInputGate extends IndexedInputGate {
 
     private Optional<Buffer> readBufferFromInputChannel(InputChannel inputChannel)
             throws IOException, InterruptedException {
-        Optional<BufferAndAvailability> bufferAndAvailabilityOpt = inputChannel.getNextBuffer();
+        Optional<BufferAndAvailability> bufferAndAvailabilityOpt = inputChannel.getNextBuffer();//获取buffer
         if (!bufferAndAvailabilityOpt.isPresent()) {
             return Optional.empty();
         }

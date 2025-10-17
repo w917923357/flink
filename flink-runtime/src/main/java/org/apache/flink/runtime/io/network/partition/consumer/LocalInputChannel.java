@@ -248,7 +248,7 @@ public class LocalInputChannel extends InputChannel implements BufferAvailabilit
             subpartitionView = checkAndWaitForSubpartitionView();
         }
 
-        BufferAndBacklog next = subpartitionView.getNextBuffer();
+        BufferAndBacklog next = subpartitionView.getNextBuffer();//获取buffer
         // ignore the empty buffer directly
         while (next != null && next.buffer().readableBytes() == 0) {
             next.buffer().recycleBuffer();

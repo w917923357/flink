@@ -162,7 +162,7 @@ public class TaskDeploymentDescriptorFactory {
                             partitionType,
                             subpartitionRange,
                             consumedPartitionGroup.size(),
-                            getConsumedPartitionShuffleDescriptors(
+                            getConsumedPartitionShuffleDescriptors(// 关键调用，决定传递给下游的descriptor是netty还是unknown
                                     consumedIntermediateResult,
                                     consumedPartitionGroup,
                                     executionVertex.getExecutionGraphAccessor())));
@@ -210,7 +210,7 @@ public class TaskDeploymentDescriptorFactory {
                     intermediateResult.cacheShuffleDescriptors(
                             consumedPartitionGroup,
                             // compute all shuffle descriptors if it is not cached before.
-                            computeConsumedPartitionShuffleDescriptors(
+                            computeConsumedPartitionShuffleDescriptors(// 关键调用
                                     consumedPartitionGroup, internalExecutionGraphAccessor));
         }
         cachedShuffleDescriptors.serializeShuffleDescriptors(shuffleDescriptorSerializer);
@@ -229,7 +229,7 @@ public class TaskDeploymentDescriptorFactory {
         for (IntermediateResultPartitionID partitionId : consumedPartitionGroup) {
             shuffleDescriptors[i] =
                     new ShuffleDescriptorAndIndex(
-                            getConsumedPartitionShuffleDescriptor(
+                            getConsumedPartitionShuffleDescriptor(// 目标方法调用
                                     internalExecutionGraphAccessor.getResultPartitionOrThrow(
                                             partitionId),
                                     partitionDeploymentConstraint,
@@ -298,11 +298,11 @@ public class TaskDeploymentDescriptorFactory {
             IntermediateResultPartition consumedPartition,
             PartitionLocationConstraint partitionDeploymentConstraint,
             boolean nonFinishedHybridPartitionShouldBeUnknown) {
-        Execution producer = consumedPartition.getProducer().getPartitionProducer();
+        Execution producer = consumedPartition.getProducer().getPartitionProducer();//什么时候判断上游的状态
 
         ExecutionState producerState = producer.getState();
         Optional<ResultPartitionDeploymentDescriptor> consumedPartitionDescriptor =
-                producer.getResultPartitionDeploymentDescriptor(consumedPartition.getPartitionId());
+                producer.getResultPartitionDeploymentDescriptor(consumedPartition.getPartitionId());//获取上游的结果分区
 
         ResultPartitionID consumedPartitionId =
                 new ResultPartitionID(consumedPartition.getPartitionId(), producer.getAttemptId());

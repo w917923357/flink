@@ -101,8 +101,8 @@ under the License.
 		<module>flink-kubernetes</module>
 		<module>flink-external-resources</module>
 		<module>tools/ci/flink-ci-tools</module>
-		<module>flink-ademo</module>
-		<module>flink-aasql</module>
+<!--		<module>flink-ademo</module>-->
+<!--		<module>flink-aasql</module>-->
 	</modules>
 
 	<properties>

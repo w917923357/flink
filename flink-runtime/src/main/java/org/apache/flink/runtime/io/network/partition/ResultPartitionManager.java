@@ -71,7 +71,7 @@ public class ResultPartitionManager implements ResultPartitionProvider {
             int partitionListenerTimeout, ScheduledExecutor scheduledExecutor) {
         this.partitionListenerTimeout = partitionListenerTimeout;
         if (partitionListenerTimeout > 0 && scheduledExecutor != null) {
-            this.partitionListenerTimeoutChecker =
+            this.partitionListenerTimeoutChecker =//移除超时的ResultPartition
                     scheduledExecutor.scheduleWithFixedDelay(
                             this::checkRequestPartitionListeners,
                             partitionListenerTimeout,
@@ -116,7 +116,7 @@ public class ResultPartitionManager implements ResultPartitionProvider {
             final ResultPartition partition = registeredPartitions.get(partitionId);
 
             if (partition == null) {
-                throw new PartitionNotFoundException(partitionId);
+                throw new PartitionNotFoundException(partitionId);//task重启的情况下，会找不到分区，
             }
 
             LOG.debug("Requesting subpartitions {} of {}.", subpartitionIndexSet, partition);

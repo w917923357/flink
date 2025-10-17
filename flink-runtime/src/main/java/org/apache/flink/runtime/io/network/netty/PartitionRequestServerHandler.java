@@ -92,7 +92,7 @@ class PartitionRequestServerHandler extends SimpleChannelInboundHandler<NettyMes
 
             }
             // ----------------------------------------------------------------
-            // Task events
+            // Task events 业务数据消息属于哪一种？
             // ----------------------------------------------------------------
             else if (msgClazz == TaskEventRequest.class) {
                 TaskEventRequest request = (TaskEventRequest) msg;

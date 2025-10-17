@@ -241,9 +241,9 @@ public class SingleCheckpointBarrierHandler extends CheckpointBarrierHandler {
                     stateTransformer)
             throws IOException {
 
-        alignedChannels.add(alignedChannel);
+        alignedChannels.add(alignedChannel);//alignedChannels 表示当前operator 接收上游信息的inputChannel的集合
         if (alignedChannels.size() == 1) {
-            if (targetChannelCount == 1) {
+            if (targetChannelCount == 1) {//targetChannelCount 代表需要接收几个， alignedChannels.size=targetChannelCount 表示当前operator已经完成对齐
                 markAlignmentStartAndEnd(barrier.getId(), barrier.getTimestamp());
             } else {
                 markAlignmentStart(barrier.getId(), barrier.getTimestamp());

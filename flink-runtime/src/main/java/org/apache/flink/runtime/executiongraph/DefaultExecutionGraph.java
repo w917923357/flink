@@ -1381,7 +1381,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
             case FINISHED:
                 // this deserialization is exception-free
                 accumulators = deserializeAccumulators(state);
-                attempt.markFinished(accumulators, state.getIOMetrics());
+                attempt.markFinished(accumulators, state.getIOMetrics());//task重启后触发，会将状态更新成FINISHED，并调用JobMaster更新状态，涉及resultPartitionId的更新
                 return true;
 
             case CANCELED:

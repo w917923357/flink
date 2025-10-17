@@ -282,7 +282,7 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
         // downstream
         // checkpoint alignments
 
-        if (lastCheckpointId >= metadata.getCheckpointId()) {
+        if (lastCheckpointId >= metadata.getCheckpointId()) {//lastCheckpointId累加，代表当前ck已经在制作
             LOG.info(
                     "Out of order checkpoint barrier (aborted previously?): {} >= {}",
                     lastCheckpointId,
@@ -297,7 +297,7 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
         // Step (0): Record the last triggered checkpointId and abort the sync phase of checkpoint
         // if necessary.
         lastCheckpointId = metadata.getCheckpointId();
-        if (checkAndClearAbortedStatus(metadata.getCheckpointId())) {
+        if (checkAndClearAbortedStatus(metadata.getCheckpointId())) {//检查ck如果已经终止，发送CancelCheckpointMarker事件
             // broadcast cancel checkpoint marker to avoid downstream back-pressure due to
             // checkpoint barrier align.
             operatorChain.broadcastEvent(new CancelCheckpointMarker(metadata.getCheckpointId()));
@@ -334,12 +334,12 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
         operatorChain.broadcastEvent(checkpointBarrier, options.isUnalignedCheckpoint());
 
         // Step (3): Register alignment timer to timeout aligned barrier to unaligned barrier
-        registerAlignmentTimer(metadata.getCheckpointId(), operatorChain, checkpointBarrier);
+        registerAlignmentTimer(metadata.getCheckpointId(), operatorChain, checkpointBarrier);//注册超时指标
 
         // Step (4): Prepare to spill the in-flight buffers for input and output
-        if (options.needsChannelState()) {
+        if (options.needsChannelState()) {//设置 Debloating 缓冲区
             // output data already written while broadcasting event
-            channelStateWriter.finishOutput(metadata.getCheckpointId());
+            channelStateWriter.finishOutput(metadata.getCheckpointId());//非对齐需要刷数据
         }
 
         // Step (5): Take the state snapshot. This should be largely asynchronous, to not impact

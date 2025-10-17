@@ -120,7 +120,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         // the writeAndFlushNextMessageIfPossible calls.
         boolean triggerWrite = availableReaders.isEmpty();
         registerAvailableReader(reader);
-
+        //这里先判断再注册是为了保证只有一个线程负责触发写操作，避免多个线程同时触发导致的性能问题
         if (triggerWrite) {
             writeAndFlushNextMessageIfPossible(ctx.channel());
         }
@@ -263,7 +263,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
             if (toRelease != null) {
                 releaseViewReader(toRelease);
             }
-        } else if (msg instanceof PartitionRequestListener) {
+        } else if (msg instanceof PartitionRequestListener) {//ResultPartitionManager构造会启动定时任务检测超时的Partition, 超时的Partition会发送PartitionRequestListener消息
             PartitionRequestListener partitionRequestListener = (PartitionRequestListener) msg;
 
             // Send partition not found message to the downstream task when the listener is timeout.

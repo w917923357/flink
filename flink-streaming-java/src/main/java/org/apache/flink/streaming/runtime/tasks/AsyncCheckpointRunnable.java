@@ -120,7 +120,7 @@ final class AsyncCheckpointRunnable implements Runnable, Closeable {
 
             SnapshotsFinalizeResult snapshotsFinalizeResult =
                     isTaskDeployedAsFinished
-                            ? finalizedFinishedSnapshots()
+                            ? finalizedFinishedSnapshots()//阻塞等待，怎么确认的？？？
                             : finalizeNonFinishedSnapshots();
 
             final long asyncEndNanos = System.nanoTime();

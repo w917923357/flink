@@ -106,8 +106,8 @@ class CreditBasedSequenceNumberingViewReader
                             partitionProvider, this, subpartitionIndexSet, resultPartitionId);
             // The partition provider will create subpartitionView if resultPartition is
             // registered, otherwise it will register a listener of partition request to the result
-            // partition manager.
-            Optional<ResultSubpartitionView> subpartitionViewOptional =
+            // partition manager.  请求的分区尚未就绪时，它不会立即返回错误，而是会创建一个 PartitionRequestListener 对象，并将其注册到 ResultPartitionManager 中。这个 Listener 会等待分区就绪。
+            Optional<ResultSubpartitionView> subpartitionViewOptional = //org.apache.flink.runtime.io.network.partition.ResultPartition.setup 成功后 会触发listener的回调
                     partitionProvider.createSubpartitionViewOrRegisterListener(
                             resultPartitionId,
                             subpartitionIndexSet,
@@ -256,9 +256,9 @@ class CreditBasedSequenceNumberingViewReader
         BufferAndBacklog next = subpartitionView.getNextBuffer(); //获取下一个缓冲区及其积压缓冲区数量
         if (next != null) {
             if (next.buffer().isBuffer() && --numCreditsAvailable < 0) { // 如果下一个缓冲区是一个真正的缓冲区（而不是元数据或其他），并且当前可用的信用额度减一后小于0
-                throw new IllegalStateException("no credit available");   // 抛出异常，因为没有足够的信用额度来接收更多的缓冲区
-            }
-
+                throw new IllegalStateException("no credit available");   // 抛出异常，因为没有足够的信用额度来接收更多的缓冲区,
+            } //这个异常会向上层的handler抛，最终 PartitionRequestServerHandler 的channelRead0 catch并向下游发送ErrorResponse,
+            //下游收到这个errorResponse, 会调用 notifyAllChannelsOfErrorAndClose， 触发重连和重试逻辑
             final Buffer.DataType nextDataType = getNextDataType(next);
             return new BufferAndAvailability(
                     next.buffer(), nextDataType, next.buffersInBacklog(), next.getSequenceNumber());

@@ -119,7 +119,7 @@ public abstract class AbstractStreamTaskNetworkInput<
                 }
             }
 
-            Optional<BufferOrEvent> bufferOrEvent = checkpointedInputGate.pollNext();
+            Optional<BufferOrEvent> bufferOrEvent = checkpointedInputGate.pollNext();//获取待处理的数据
             if (bufferOrEvent.isPresent()) {
                 // return to the mailbox after receiving a checkpoint barrier to avoid processing of
                 // data after the barrier before checkpoint is performed for unaligned checkpoint

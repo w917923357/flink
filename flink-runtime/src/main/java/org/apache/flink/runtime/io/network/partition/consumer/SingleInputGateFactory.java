@@ -243,7 +243,7 @@ public class SingleInputGateFactory {
             InputChannelMetrics metrics,
             boolean isSharedInputChannelSupported) {
         ShuffleDescriptor[] shuffleDescriptors =
-                inputGateDeploymentDescriptor.getShuffleDescriptors();//注意这个shuffleDescriptors 的来源， 是否是jobMaster？
+                inputGateDeploymentDescriptor.getShuffleDescriptors();
 
         // Create the input channels. There is one input channel for each consumed subpartition.
         InputChannel[] inputChannels =

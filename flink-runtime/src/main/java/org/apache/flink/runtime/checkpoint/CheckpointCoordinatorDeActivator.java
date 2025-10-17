@@ -32,7 +32,7 @@ public class CheckpointCoordinatorDeActivator implements JobStatusListener {
 
     private final CheckpointCoordinator coordinator;
 
-    public CheckpointCoordinatorDeActivator(CheckpointCoordinator coordinator) {
+    public CheckpointCoordinatorDeActivator(CheckpointCoordinator coordinator) {//DefaultScheduler构造
         this.coordinator = checkNotNull(coordinator);
     }
 

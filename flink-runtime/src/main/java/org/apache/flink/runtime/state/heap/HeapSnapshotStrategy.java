@@ -149,7 +149,7 @@ class HeapSnapshotStrategy<K>
 
             final DataOutputViewStreamWrapper outView =
                     new DataOutputViewStreamWrapper(localStream);
-            serializationProxy.write(outView);
+            serializationProxy.write(outView);//快照数据本地内存保存
 
             final long[] keyGroupRangeOffsets = new long[keyGroupRange.getNumberOfKeyGroups()];
 

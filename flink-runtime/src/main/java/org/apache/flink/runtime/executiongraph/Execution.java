@@ -289,7 +289,7 @@ public class Execution
         // note: we also accept resource assignment when being in state CREATED for testing purposes
         if (state == SCHEDULED || state == CREATED) {
             if (assignedResource == null) {
-                assignedResource = logicalSlot;
+                assignedResource = logicalSlot;//什么时候分配的资源？？？
                 if (logicalSlot.tryAssignPayload(this)) {
                     // check for concurrent modification (e.g. cancelling call)
                     if ((state == SCHEDULED || state == CREATED)
@@ -752,7 +752,7 @@ public class Execution
                             consumerVertex.cachePartitionInfo(partitionInfo);
                         } else {
                             consumer.sendUpdatePartitionInfoRpcCall(
-                                    Collections.singleton(partitionInfo));
+                                    Collections.singleton(partitionInfo));//发送分区更新RPC
                         }
                     }
                 }
@@ -951,7 +951,7 @@ public class Execution
 
                 if (transitionState(current, FINISHED)) {
                     try {
-                        finishPartitionsAndUpdateConsumers();
+                        finishPartitionsAndUpdateConsumers();//Task重启 → 生成新的ResultPartitionID
                         updateAccumulatorsAndMetrics(userAccumulators, metrics);
                         releaseAssignedResource(null);
                         vertex.getExecutionGraphAccessor().deregisterExecution(this);
@@ -985,7 +985,7 @@ public class Execution
                 getVertex().finishPartitionsIfNeeded();
 
         for (IntermediateResultPartition partition : finishedPartitions) {
-            updatePartitionConsumers(partition);
+            updatePartitionConsumers(partition); //JobManager检测到分区变化 → 识别需要更新分区信息的下游task
         }
     }
 
@@ -1356,7 +1356,7 @@ public class Execution
         if (slot != null) {
             final TaskManagerGateway taskManagerGateway = slot.getTaskManagerGateway();
             final TaskManagerLocation taskManagerLocation = slot.getTaskManagerLocation();
-
+            // 向TaskManager发送分区更新请求
             CompletableFuture<Acknowledge> updatePartitionsResultFuture =
                     taskManagerGateway.updatePartitions(attemptId, partitionInfos, rpcTimeout);
 

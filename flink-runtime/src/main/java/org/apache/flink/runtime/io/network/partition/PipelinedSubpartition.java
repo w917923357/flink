@@ -186,7 +186,7 @@ public class PipelinedSubpartition extends ResultSubpartition implements Channel
             }
             updateStatistics(bufferConsumer);
             increaseBuffersInBacklog(bufferConsumer);// 上游resultPartition 增加backlog和bufferConsumer
-            notifyDataAvailable = finish || shouldNotifyDataAvailable();
+            notifyDataAvailable = finish || shouldNotifyDataAvailable();//这里的条件判断分别是有什么意义
 
             isFinished |= finish;
             newBufferSize = bufferSize;

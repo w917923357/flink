@@ -326,7 +326,7 @@ public class PendingCheckpoint implements Checkpoint {
 
             // make sure we fulfill the promise with an exception if something fails
             try {
-                checkpointPlan.fulfillFinishedTaskStatus(operatorStates);
+                checkpointPlan.fulfillFinishedTaskStatus(operatorStates);//标记 checkPointPlan 已完成
 
                 // write out the metadata
                 final CheckpointMetadata savepoint =
