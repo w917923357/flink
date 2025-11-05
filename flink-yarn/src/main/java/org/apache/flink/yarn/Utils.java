@@ -404,7 +404,7 @@ public final class Utils {
                         hasLog4j,
                         hasKrb5,
                         taskManagerMainClass,
-                        taskManagerDynamicProperties);
+                        taskManagerDynamicProperties);//创建启动命令，taskManagerMainClass：YarnTaskExecutorRunner.class
 
         if (log.isDebugEnabled()) {
             log.debug("Starting TaskManagers with command: " + launchCommand);

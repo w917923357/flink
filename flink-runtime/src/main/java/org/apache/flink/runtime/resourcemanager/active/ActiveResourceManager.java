@@ -392,7 +392,7 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
                             totalWorkerCounter.getNum(workerResourceSpec),
                             declaredWorkerNumber);
                     for (int i = 0; i < requestWorkerNumber; i++) {
-                        requestNewWorker(workerResourceSpec);
+                        requestNewWorker(workerResourceSpec);//请求资源
                     }
                 } else {
                     startWorkerCoolDown.thenRun(this::checkResourceDeclarations);
@@ -505,7 +505,7 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
                 pendingCount);
 
         final CompletableFuture<WorkerType> requestResourceFuture =
-                resourceManagerDriver.requestResource(taskExecutorProcessSpec);
+                resourceManagerDriver.requestResource(taskExecutorProcessSpec);//不同资源管理平台申请资源
         unallocatedWorkerFutures.put(requestResourceFuture, workerResourceSpec);
 
         FutureUtils.assertNoException(

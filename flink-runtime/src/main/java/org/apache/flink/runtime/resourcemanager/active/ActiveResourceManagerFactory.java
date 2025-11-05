@@ -110,7 +110,7 @@ public abstract class ActiveResourceManagerFactory<WorkerType extends ResourceID
 
         return new ActiveResourceManager<>(
                 createResourceManagerDriver(
-                        configuration, webInterfaceUrl, rpcService.getAddress()),
+                        configuration, webInterfaceUrl, rpcService.getAddress()),//这里创建了 YarnResourceManagerDriver，KubernetesResourceManagerDriver 因此能和yarn，k8交互
                 configuration,
                 rpcService,
                 leaderSessionId,

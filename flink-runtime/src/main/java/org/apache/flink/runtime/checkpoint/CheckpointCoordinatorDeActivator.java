@@ -40,7 +40,7 @@ public class CheckpointCoordinatorDeActivator implements JobStatusListener {
     public void jobStatusChanges(JobID jobId, JobStatus newJobStatus, long timestamp) {
         if (newJobStatus == JobStatus.RUNNING) {
             // start the checkpoint scheduler
-            coordinator.startCheckpointScheduler();
+            coordinator.startCheckpointScheduler();//触发来源 org.apache.flink.runtime.scheduler.DefaultScheduler.startSchedulingInternal
         } else {
             // anything else should stop the trigger for now
             coordinator.stopCheckpointScheduler();

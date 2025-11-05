@@ -70,16 +70,16 @@ public class SpillingAdaptiveSpanningRecordDeserializer<T extends IOReadableWrit
         int numBytes = buffer.getSize();
 
         // check if some spanning record deserialization is pending
-        if (spanningWrapper.getNumGatheredBytes() > 0) {
+        if (spanningWrapper.getNumGatheredBytes() > 0) {//如果 > 0，说明当前有一个跨越多个缓冲区的大记录正在被逐步收集和反序列化
             spanningWrapper.addNextChunkFromMemorySegment(segment, offset, numBytes);
-        } else {
+        } else {//新记录开始
             nonSpanningWrapper.initializeFromMemorySegment(segment, offset, numBytes + offset);
         }
     }
 
     @Override
     public CloseableIterator<Buffer> getUnconsumedBuffer() throws IOException {
-        return nonSpanningWrapper.hasRemaining()
+        return nonSpanningWrapper.hasRemaining()// remaining() = this.limit - this.position，即检查当前缓冲区中是否还有未读取的字节
                 ? nonSpanningWrapper.getUnconsumedSegment()
                 : spanningWrapper.getUnconsumedSegment();
     }

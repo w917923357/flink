@@ -317,7 +317,7 @@ public class FineGrainedSlotManager implements SlotManager {
         if (resourceRequirements.getResourceRequirements().isEmpty()) {
             LOG.info("Clearing resource requirements of job {}", resourceRequirements.getJobId());
             jobMasterTargetAddresses.remove(resourceRequirements.getJobId());
-            if (resourceAllocator.isSupported()) {
+            if (resourceAllocator.isSupported()) {//是否支持释放回收资源
                 taskManagerTracker.clearPendingAllocationsOfJob(resourceRequirements.getJobId());
             }
         } else {
@@ -328,10 +328,10 @@ public class FineGrainedSlotManager implements SlotManager {
             jobMasterTargetAddresses.put(
                     resourceRequirements.getJobId(), resourceRequirements.getTargetAddress());
         }
-
+        //resourceTracker 跟踪监控每个作业的资源， 因此在slotManager在刚开始申请资源之前就要添加到 JobScopedResourceTracker(作业级别的跟踪器) 中
         resourceTracker.notifyResourceRequirements(
                 resourceRequirements.getJobId(), resourceRequirements.getResourceRequirements());
-        checkResourceRequirementsWithDelay();
+        checkResourceRequirementsWithDelay();//申请资源
     }
 
     @Override
@@ -591,7 +591,7 @@ public class FineGrainedSlotManager implements SlotManager {
      * are performed with a slight delay.
      */
     private void checkResourceRequirementsWithDelay() {
-        if (requirementsCheckDelay.toMillis() <= 0) {
+        if (requirementsCheckDelay.toMillis() <= 0) {//延迟时间 <= 0，立即执行
             checkResourceRequirements();
         } else {
             if (requirementsCheckFuture == null || requirementsCheckFuture.isDone()) {
@@ -680,7 +680,7 @@ public class FineGrainedSlotManager implements SlotManager {
 
         if (resourceAllocator.isSupported()) {
             checkResourcesNeedReconcile();
-            declareNeededResourcesWithDelay();
+            declareNeededResourcesWithDelay();//分配资源
         }
     }
 

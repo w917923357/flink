@@ -187,7 +187,7 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
         // make sure we have a fetch we are working on, or move to the next
         RecordsWithSplitIds<E> recordsWithSplitId = this.currentFetch;
         if (recordsWithSplitId == null) {
-            recordsWithSplitId = getNextFetch(output);
+            recordsWithSplitId = getNextFetch(output);//mysql cdc 读取数据
             if (recordsWithSplitId == null) {
                 return trace(finishedOrAvailableLater());
             }

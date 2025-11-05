@@ -466,7 +466,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
         final List<Execution> executionsToDeploy =
                 verticesToDeploy.stream()
                         .map(this::getCurrentExecutionOfVertex)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList());//这里会有ExecutionVertexID应该是5个？ 最终executionsToDeploy是不是只有3个？ 融合？ 还是不重复的只有3个
 
         executionDeployer.allocateSlotsAndDeploy(executionsToDeploy, requiredVersionByVertex);
     }

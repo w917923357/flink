@@ -170,7 +170,7 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
         Set<ExecutionSlotSharingGroup> groupsToAssign = new HashSet<>(executionsByGroup.keySet());
 
         Map<ExecutionSlotSharingGroup, SharedSlot> assignedSlots =
-                tryAssignExistingSharedSlots(groupsToAssign);
+                tryAssignExistingSharedSlots(groupsToAssign);//尝试分配已存在的共享slot
         slots.putAll(assignedSlots);
         groupsToAssign.removeAll(assignedSlots.keySet());
 

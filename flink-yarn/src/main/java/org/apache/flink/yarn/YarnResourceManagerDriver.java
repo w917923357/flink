@@ -333,7 +333,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                                 return null;
                             }));
 
-            addContainerRequest(resource, priority);
+            addContainerRequest(resource, priority);//向Yarn的ResourceManager发送一个新的容器请求
 
             // make sure we transmit the request fast and receive fast news of granted allocations
             resourceManagerClient.setHeartbeatInterval(containerRequestHeartbeatIntervalMillis);
@@ -431,7 +431,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             }
 
             requestResourceFuture.complete(new YarnWorkerNode(container, resourceId));
-            startTaskExecutorInContainerAsync(container, taskExecutorProcessSpec, resourceId);
+            startTaskExecutorInContainerAsync(container, taskExecutorProcessSpec, resourceId);//启动taskExecutor
             removeContainerRequest(pendingRequest);
 
             numAccepted++;
@@ -461,7 +461,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         AMRMClient.ContainerRequest containerRequest =
                 ContainerRequestReflector.INSTANCE.getContainerRequest(
                         resource, priority, taskManagerNodeLabel);
-        resourceManagerClient.addContainerRequest(containerRequest);
+        resourceManagerClient.addContainerRequest(containerRequest);//这里只是将资源申请放入缓存，YarnResourceManagerDriver.YarnContainerEventHandler.onContainersAllocated 会真正处理
     }
 
     private void removeContainerRequest(AMRMClient.ContainerRequest pendingContainerRequest) {

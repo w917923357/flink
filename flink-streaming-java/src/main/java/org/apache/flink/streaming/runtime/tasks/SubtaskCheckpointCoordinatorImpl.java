@@ -640,7 +640,7 @@ class SubtaskCheckpointCoordinatorImpl implements SubtaskCheckpointCoordinator {
     }
 
     private void prepareInflightDataSnapshot(long checkpointId) throws CheckpointException {
-        prepareInputSnapshot
+        prepareInputSnapshot // prepareInputSnapshot 的定义在 StreamTask 构造方法中完成， 代码行: this::prepareInputSnapshot,
                 .apply(channelStateWriter, checkpointId)
                 .whenComplete(
                         (unused, ex) -> {

@@ -1005,7 +1005,7 @@ public class JobMaster extends FencedRpcEndpoint<JobMasterId>
                 jobGraph.getJobID(),
                 getFencingToken());
 
-        startScheduling();
+        startScheduling();//JobMaster构建时已经完成了JobGraph->ExecutionGraph,因此这里直接开始调度，调度内部会触发taskExecutor的创建
     }
 
     private void startJobMasterServices() throws Exception {
