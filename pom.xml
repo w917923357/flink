@@ -1753,6 +1753,10 @@ under the License.
 
 						<!-- The most recently published version configuration file -->
 						<exclude>flink-test-utils-parent/flink-migration-test-utils/src/main/resources/most_recently_published_version</exclude>
+						<exclude>a_conf/**</exclude>
+						<exclude>a_lib/**</exclude>
+						<exclude>flink-aasql/**</exclude>
+						<exclude>flink-ademo/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
