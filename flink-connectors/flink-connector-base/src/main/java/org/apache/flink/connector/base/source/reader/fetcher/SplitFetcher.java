@@ -204,19 +204,19 @@ public class SplitFetcher<E, SplitT extends SourceSplit> implements Runnable {
         assert lock.isHeldByCurrentThread();
         try {
             if (paused) {
-                resumed.await();
+                resumed.await();// ① 暂停状态：等待恢复信号
                 // if it was paused, ensure that fetcher was not shutdown
                 return null;
             }
             if (!taskQueue.isEmpty()) {
                 // a specific task is avail, so take that in FIFO
-                return taskQueue.poll();
+                return taskQueue.poll();// ② 优先级最高：执行队列中的任务
             } else if (!assignedSplits.isEmpty()) {
                 // use fallback task = fetch if there is at least one split
-                return fetchTask;
+                return fetchTask;// ③ 有分片：执行主 fetch 任务
             } else {
                 // nothing to do, wait for signal
-                nonEmpty.await();
+                nonEmpty.await();// ④ 无任务无分片：等待新任务
                 return taskQueue.poll();
             }
         } catch (InterruptedException e) {
@@ -314,7 +314,7 @@ public class SplitFetcher<E, SplitT extends SourceSplit> implements Runnable {
                 closed = true;
                 paused = false;
                 LOG.info("Shutting down split fetcher {}", id);
-                wakeUpUnsafe(false);
+                wakeUpUnsafe(false); // Checkpoint 暂停时的 wakeup
             }
         } finally {
             lock.unlock();
@@ -372,15 +372,15 @@ public class SplitFetcher<E, SplitT extends SourceSplit> implements Runnable {
         if (currentTask != null) {
             // The running task may have missed our wakeUp flag and running, wake it up.
             LOG.debug("Waking up running task {}", currentTask);
-            currentTask.wakeUp();
+            currentTask.wakeUp(); // 情况 1：currentTask != null 代表当前有任务应该运行， 所以唤醒
         } else if (!taskOnly) {
             // The task has not started running yet, and it will not run for this
             // runOnce() invocation due to the wakeUp flag. But we might have to
             // wake up the fetcher thread in case it is blocking on the task queue.
             // Only wake up when the thread has started and there is no running task.
-            LOG.debug("Waking up fetcher thread.");
-            nonEmpty.signal();
-            resumed.signal();
+            LOG.debug("Waking up fetcher thread."); // 情况 2：无运行任务，且 taskOnly=false,
+            nonEmpty.signal();// 唤醒等待 SplitFetcherTask 任务队列的线程(addASplitTask, removeSplitsTask)
+            resumed.signal();// 唤醒等待 resumed 的线程(暂停状态，第一优先)
         }
     }
 

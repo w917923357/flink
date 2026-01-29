@@ -435,7 +435,7 @@ public class SourceOperator<OUT, SplitT extends SourceSplit> extends AbstractStr
         // short circuit the hot path. Without this short circuit (READING handled in the
         // switch/case) InputBenchmark.mapSink was showing a performance regression.
         if (operatingMode != OperatingMode.READING) {
-            return emitNextNotReading(output);
+            return emitNextNotReading(output);//第一次调用时进入
         }
 
         InputStatus status;
@@ -459,7 +459,7 @@ public class SourceOperator<OUT, SplitT extends SourceSplit> extends AbstractStr
                             watermarkAlignmentParams.getUpdateInterval(),
                             watermarkAlignmentParams.getUpdateInterval());
                 }
-                initializeMainOutput(output);
+                initializeMainOutput(output);//第一次调用时进入 初始化主输出，将DataOutput转化为ReaderOutput
                 return convertToInternalStatus(sourceReader.pollNext(currentMainOutput));
             case SOURCE_STOPPED:
                 this.operatingMode = OperatingMode.DATA_FINISHED;

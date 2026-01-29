@@ -197,10 +197,10 @@ public class FutureCompletingBlockingQueue<T> {
         lock.lockInterruptibly();
         try {
             while (queue.size() >= capacity) {
-                if (getAndResetWakeUpFlag(threadIndex)) {
-                    return false;
+                if (getAndResetWakeUpFlag(threadIndex)) { //检查是否被唤醒
+                    return false; // 被唤醒 → 返回 false（不放入）
                 }
-                waitOnPut(threadIndex);
+                waitOnPut(threadIndex); //未唤醒 → 等待队列有空间
             }
             enqueue(element);
             return true;

@@ -54,19 +54,19 @@ class FetchTask<E, SplitT extends SourceSplit> implements SplitFetcherTask {
     @Override
     public boolean run() throws IOException {
         try {
-            if (!isWakenUp() && lastRecords == null) {
-                lastRecords = splitReader.fetch();
+            if (!isWakenUp() && lastRecords == null) {//① 第一个阻塞点：fetch() 正在读取
+                lastRecords = splitReader.fetch();//可能在这里阻塞
             }
 
-            if (!isWakenUp()) {
+            if (!isWakenUp()) {//② 第二个阻塞点：put() 正在入队
                 // The order matters here. We must first put the last records into the queue.
                 // This ensures the handling of the fetched records is atomic to wakeup.
-                if (elementsQueue.put(fetcherIndex, lastRecords)) {
-                    if (!lastRecords.finishedSplits().isEmpty()) {
+                if (elementsQueue.put(fetcherIndex, lastRecords)) {//可能在这里阻塞
+                    if (!lastRecords.finishedSplits().isEmpty()) {//检查是否有完成的分片
                         // The callback does not throw InterruptedException.
-                        splitFinishedCallback.accept(lastRecords.finishedSplits());
+                        splitFinishedCallback.accept(lastRecords.finishedSplits());//从 assignedSplits 中移除分片， SplitFetcher 就知道该分片已完成，后续 getNextTaskUnsafe() 不会再考虑它
                     }
-                    lastRecords = null;
+                    lastRecords = null;//清空缓存，准备下一轮 fetch
                 }
             }
         } catch (InterruptedException e) {
@@ -88,15 +88,15 @@ class FetchTask<E, SplitT extends SourceSplit> implements SplitFetcherTask {
     @Override
     public void wakeUp() {
         // Set the wakeup flag first.
-        wakeup = true;
-        if (lastRecords == null) {
+        wakeup = true;//  设置标志，不是真的中断
+        if (lastRecords == null) {// ✓ 情况 1：数据为空，说明正在 fetch()
             // Two possible cases:
             // 1. The splitReader is reading or is about to read the records.
             // 2. The records has been enqueued and set to null.
             // In case 1, we just wakeup the split reader. In case 2, the next run might be skipped.
             // In any case, the records won't be enqueued in the ongoing run().
-            splitReader.wakeUp();
-        } else {
+            splitReader.wakeUp(); //唤醒 splitReader
+        } else {//情况 2：数据非空，说明正在 put()
             // The task might be blocking on enqueuing the records, just interrupt.
             elementsQueue.wakeUpPuttingThread(fetcherIndex);
         }

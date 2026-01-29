@@ -187,18 +187,18 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
         // make sure we have a fetch we are working on, or move to the next
         RecordsWithSplitIds<E> recordsWithSplitId = this.currentFetch;
         if (recordsWithSplitId == null) {
-            recordsWithSplitId = getNextFetch(output);
+            recordsWithSplitId = getNextFetch(output);// ← 从队列拉取
             if (recordsWithSplitId == null) {
-                return trace(finishedOrAvailableLater());
+                return trace(finishedOrAvailableLater());// ← 无数据时返回
             }
         }
 
         // we need to loop here, because we may have to go across splits
         while (true) {
-            // Process one record.
+            // Process one record.// 从批次中获取一条记录
             final E record = recordsWithSplitId.nextRecordFromSplit();
             if (record != null) {
-                // emit the record.
+                // emit the record. // 发送到下游（map/filter/sink）
                 numRecordsInCounter.inc(1);
                 recordEmitter.emitRecord(record, currentSplitOutput, currentSplitContext.state);
                 LOG.trace("Emitted record: {}", record);
@@ -208,12 +208,12 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
                 // this out and return the correct status.
                 // That means we emit the occasional 'false positive' for availability, but this
                 // saves us doing checks for every record. Ultimately, this is cheaper.
-                return trace(InputStatus.MORE_AVAILABLE);
-            } else if (!moveToNextSplit(recordsWithSplitId, output)) {
+                return trace(InputStatus.MORE_AVAILABLE);// ← 还有数据
+            } else if (!moveToNextSplit(recordsWithSplitId, output)) { //record == null 当前分片在这个批次中没有更多数据了， moveToNextSplit() 找到下一个分片 → 返回 true
                 // The fetch is done and we just discovered that and have not emitted anything, yet.
                 // We need to move to the next fetch. As a shortcut, we call pollNext() here again,
                 // rather than emitting nothing and waiting for the caller to call us again.
-                return pollNext(output);
+                return pollNext(output); // 当前批次用尽了，没有更多分片了 → 递归调用 pollNext() 获取下一批数据
             }
         }
     }
@@ -228,7 +228,7 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
         splitFetcherManager.checkErrors();
 
         LOG.trace("Getting next source data batch from queue");
-        final RecordsWithSplitIds<E> recordsWithSplitId = elementsQueue.poll();
+        final RecordsWithSplitIds<E> recordsWithSplitId = elementsQueue.poll();//fetchTask每次拉到数据会存入队列，elementsQueue.put(fetcherIndex, lastRecords)
         if (recordsWithSplitId == null || !moveToNextSplit(recordsWithSplitId, output)) {
             // No element available, set to available later if needed.
             return null;
@@ -264,7 +264,7 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
         final String nextSplitId = recordsWithSplitIds.nextSplit();
         if (nextSplitId == null) {
             LOG.trace("Current fetch is finished.");
-            finishCurrentFetch(recordsWithSplitIds, output);
+            finishCurrentFetch(recordsWithSplitIds, output);//触发 MySqlSourceReader.onSplitFinished 开始继续分配split
             return false;
         }
 

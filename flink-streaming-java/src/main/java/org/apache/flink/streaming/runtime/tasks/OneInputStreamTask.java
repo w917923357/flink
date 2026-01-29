@@ -235,7 +235,7 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
         @Override
         public void emitRecord(StreamRecord<IN> record) throws Exception {
             numRecordsIn.inc();
-            recordProcessor.accept(record);
+            recordProcessor.accept(record);//将StreamRecord发送给HeadOperator(将数据发送到OperatorChain中的HeaderOperator)
         }
 
         @Override
